@@ -37,6 +37,7 @@ def standard_scaler(train, test):
 
 def scale_inverse(train_scaled, test_scaled, scaler):
     """
+    Takes in the scaler, X_train_scaled and X_test_scaled DataFrames. Then it returns the X_train_unscaled and X_test_unscaled.
 
     When calling the function rename the variables to maintain original:
     X_train_unscaled, X_test_unscaled = scale_inverse(train_scaled, test_scaled, scaler)
@@ -48,6 +49,8 @@ def scale_inverse(train_scaled, test_scaled, scaler):
 
 def uniform_scaler(train, test):
     """
+    Quantile transformer, non -linear transformation - uniform.
+    Reduces impact of outliears, smooths out unusual distributions.
 
     When calling the function rename the variables to maintain original:
     X_train_uniform_scaled, X_test_uniform_scaled = uniform_scaler(X_train, X_test)
@@ -61,15 +64,17 @@ def uniform_scaler(train, test):
 
 def gaussian_scaler(train, test):
     """
+    Transforms and then normalizes data.
+    yeo_johnson allows for negative data, box_cox allows for positive data only.
 
     When calling the function rename the variables to maintain original:
-    X_train_gaussian_scaled, X_test_gaussian_scaled = gaussian_scaler(X_train, X_test)
+    scaler, X_train_gaussian_scaled, X_test_gaussian_scaled = gaussian_scaler(X_train, X_test)
 
     """    
     scaler = PowerTransformer(method='yeo-johnson', standardize=False, copy=True).fit(train)
     train_scaled = pd.DataFrame(scaler.transform(train), columns=train.columns.values).set_index([train.index.values])
     test_scaled = pd.DataFrame(scaler.transform(test), columns=test.columns.values).set_index([test.index.values])
-    return train_scaled, test_scaled
+    return scaler, train_scaled, test_scaled
 
 def min_max_scaler(train, test):
     """
@@ -86,6 +91,7 @@ def min_max_scaler(train, test):
 
 def iqr_robust_scaler(train, test):
     """
+    Scales features using stats that are robust to outliers by removing the median and scaling data to the IQR.
 
     When calling the function rename the variables to maintain original:
     X_train_iqr_robust_scaled, X_test_iqr_robust_scaled = iqr_robust_scaler(X_train, X_test)
