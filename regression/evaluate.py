@@ -1,4 +1,50 @@
-def plot_residuals(df, residual=True):
+import pandas as pd
+import numpy as np
+from sklearn.metrics import mean_squared_error, r2_score, explained_variance_score
+from sklearn.linear_model import LinearRegression
+
+from math import sqrt
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+
+import math
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import pydataset
+import scipy.stats as stats
+import sklearn.metrics
+from statsmodels.formula.api import ols
+
+#Setup Functions
+
+def residuals(actual, predicted):
+    return predicted - actual
+
+def sse(actual, predicted):
+    return (residuals(actual, predicted) ** 2).sum()
+
+def mse(actual, predicted):
+    n = actual.shape[0]
+    return sse(actual, predicted) / n
+
+def rmse(actual, predicted):
+    return math.sqrt(mse(actual, predicted))
+
+def ess(actual, predicted):
+    return ((predicted - actual.mean()) ** 2).sum()
+
+def tss(actual):
+    return ((actual - actual.mean()) ** 2).sum()
+
+def r2_score(actual, predicted):
+    return ess(actual, predicted) / tss(actual)
+
+# Evaluation Functions
+
+def plot_residuals(df):
     sns.scatterplot(x="yhat", y="residual", data=df)
     return plt.show()
 
@@ -71,3 +117,42 @@ def model_significance(ols_model):
     r2 = ols_model.rsquared
     p = ols_model.f_pvalue
     return print("p-value =", round(p,3), "R-squared =", round(r2, 3))
+
+# # Class Version
+
+#     def plot_residuals(actual, predicted):
+#     residuals = actual - predicted
+#     plt.hlines(0, actual.min(), actual.max(), ls=':')
+#     plt.scatter(actual, residuals)
+#     plt.ylabel('residual ($y - \hat{y}$)')
+#     plt.xlabel('actual value ($y$)')
+#     plt.title('Actual vs Residual')
+#     return plt.gca()
+
+# def regression_errors(actual, predicted):
+#     return {
+#         'sse': sse(actual, predicted),
+#         'ess': ess(actual, predicted),
+#         'tss': tss(actual),
+#         'mse': mse(actual, predicted),
+#         'rmse': rmse(actual, predicted),
+#     }
+
+# def baseline_mean_errors(actual):
+#     predicted = actual.mean()
+#     return {
+#         'sse': sse(actual, predicted),
+#         'mse': mse(actual, predicted),
+#         'rmse': rmse(actual, predicted),
+#     }
+
+# def better_than_baseline(actual, predicted):
+#     sse_baseline = sse(actual, actual.mean())
+#     sse_model = sse(actual, predicted)
+#     return sse_model < sse_baseline
+
+# def model_significance(ols_model):
+#     return {
+#         'r^2 -- variance explained': ols_model.rsquared,
+#         'p-value -- P(data|model == baseline)': ols_model.f_pvalue,
+#     }
