@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-%matplotlib inline
 import seaborn as sns
 
 from math import sqrt
@@ -12,16 +11,19 @@ from pydataset import data
 from env import host, user, password
 from wrangle import wrangle_telco
 
+def split_my_data(df, train_pct):
+    train, test = train_test_split(df, train_size=train_pct)
+    return train, test
 
-def split_my_data(X, y, train_pct):
-    """
-    Take in X_train, X_test, y_train, y_test
+# def split_my_data(X, y, train_pct):
+#     """
+#     Take in X_train, X_test, y_train, y_test
 
-    When calling the function name the variables:
-    X_train, X_test, y_train, y_test = split_my_data(X, y, .8)
+#     When calling the function name the variables:
+#     X_train, X_test, y_train, y_test = split_my_data(X, y, .8)
 
-    """
-    return (train_test_split(X, y, train_size = train_pct))
+#     """
+#     return (train_test_split(X, y, train_size = train_pct))
 
 def standard_scaler(train, test):
     """
