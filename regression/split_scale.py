@@ -6,6 +6,7 @@ import seaborn as sns
 from math import sqrt
 from scipy import stats
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from pydataset import data
 
 from env import host, user, password
