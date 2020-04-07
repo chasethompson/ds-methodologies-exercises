@@ -18,5 +18,9 @@ def wrangle_telco():
     telco.dropna(inplace=True)
     return telco
 
-if __name__ == '__main__':
-    wrangle_telco()
+def wrangle_grades():
+    grades = pd.read_csv("student_grades.csv")
+    grades.drop(columns='student_id', inplace=True)
+    grades.replace(r'^\s*$', np.nan, regex=True, inplace=True)
+    df = grades.dropna().astype('int')
+    return df
