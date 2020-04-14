@@ -25,12 +25,32 @@ def get_titanic_data():
 def get_iris_data():
     url = get_db_url('iris_db')
     query = """
+    
     SELECT
-        *
+        species_id,
+        species_name,
+        sepal_length,
+        sepal_width,
+        petal_length,
+        petal_width
     FROM
-        species
+        measurements
     JOIN
-        measurements USING(species_id)
+        species USING(species_id)
     """
     iris_db = pd.read_sql(query,url)
     return iris_db
+
+# different way to do the iris data pull
+
+# def get_iris_data():
+#     url = get_db_url('iris_db')
+#     query = """
+#     SELECT 
+#         m.*,
+#         s.species_name
+#     FROM measurements m
+#     JOIN species s USING(species_id);
+#     """
+#     iris_db = pd.read_sql(query,url)
+#     return iris_db
