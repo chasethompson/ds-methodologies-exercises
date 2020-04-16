@@ -5,6 +5,8 @@ from matplotlib import pyplot as plt
 import sklearn.preprocessing
 import sklearn.model_selection
 import sklearn.impute
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder, MinMaxScaler
 
 import env
 import acquire
@@ -12,27 +14,48 @@ import split_scale
 
 ###  IRIS DATA ###
 
-def encode_species(train, test):
-    encoder = sklearn.preprocessing.OneHotEncoder()
-    encoder.fit(train[['species']])
+# def encode_species(train, test):
+#     encoder = sklearn.preprocessing.OneHotEncoder()
+#     encoder.fit(train[['species']])
     
-    cols = ['species_' + c for c in encoder.categories_[0]]
+#     cols = ['species_' + c for c in encoder.categories_[0]]
     
-    m = encoder.transform(train[['species']]).todense()
+#     m = encoder.transform(train[['species']]).todense()
 
-    train = pd.concat([train,pd.DataFrame(m, columns=cols, index=train.index)], axis=1)
+#     train = pd.concat([train,pd.DataFrame(m, columns=cols, index=train.index)], axis=1)
     
-    m = encoder.transform(test[['species']]).todense()
+#     m = encoder.transform(test[['species']]).todense()
     
-    test = pd.concat([test,pd.DataFrame(m, columns=cols, index=test.index)], axis=1)
+#     test = pd.concat([test,pd.DataFrame(m, columns=cols, index=test.index)], axis=1)
     
-    return train, test
+#     return train, test
+
+# def prep_iris(df):
+#     df = df.drop(columns=['species_id'])
+#     df = df.rename(columns={'species_name':'species'})
+#     train, test = sklearn.model_selection.train_test_split(df, train_size=.8)
+#     train, test = encode_species(train, test)
+#     return train, test
+
+
+def label_encode(train, test):
+    le = LabelEncoder()
+    train['species'] = le.fit_transform(train.species)
+    test['species'] = le.transform(test.species)
+    return le, train, test
+
 
 def prep_iris(df):
-    df = df.drop(columns=['species_id'])
-    df = df.rename(columns={'species_name':'species'})
-    train, test = sklearn.model_selection.train_test_split(df, train_size=.8)
-    train, test = encode_species(train, test)
+    df = df.drop(columns='species_id')
+    df = df.rename(columns={'species_name': 'species'})
+    train, test = train_test_split(df, train_size=.75, stratify=df.species, random_state=123)
+    train, test, le = label_encode(train, test)
+    return train, test, le
+
+
+def inverse_encode(train, test, le):
+    train['species'] = le.inverse_transform(train.species)
+    test['species'] = le.inverse_transform(test.species)
     return train, test
 
 
