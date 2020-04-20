@@ -73,13 +73,13 @@ def encode_titanic(train, test):
     encoder = sklearn.preprocessing.OneHotEncoder()
     encoder.fit(train[["embarked"]])
 
-    m = encoder.transform(train[["embarked"]]).todense()
+    m1 = encoder.transform(train[["embarked"]]).todense()
 
-    train = pd.concat([train, pd.DataFrame(m, columns=encoder.categories_[0], index=train.index)], axis=1)
+    train = pd.concat([train, pd.DataFrame(m1, columns=encoder.categories_[0], index=train.index)], axis=1)
 
-    m = encoder.transform(test[["embarked"]]).todense()
+    m2 = encoder.transform(test[["embarked"]]).todense()
 
-    test = pd.concat([train, pd.DataFrame(m, columns=encoder.categories_[0], index=test.index)], axis=1)
+    test = pd.concat([test, pd.DataFrame(m2, columns=encoder.categories_[0], index=test.index)], axis=1)
 
     return train, test
 
@@ -107,3 +107,14 @@ def prep_titanic(df):
     train.update(train_scaled)
     test.update(test_scaled)
     return scaler, train, test
+
+def prep_titanic_no_scale(df):
+    df = drop_columns(df)
+    df = fill_na(df)
+    train, test = sklearn.model_selection.train_test_split(df, train_size = .8)
+    train, test = encode_titanic(train, test)
+    train, test = impute_titanic(train, test)
+    #scaler, train_scaled, test_scaled = scale_titanic(train, test)
+    #train.update(train_scaled)
+    #test.update(test_scaled)
+    return train, test
