@@ -54,3 +54,17 @@ def get_iris_data():
 #     """
 #     iris_db = pd.read_sql(query,url)
 #     return iris_db
+
+def get_telco_data():
+    url = get_db_url('telco_churn')
+    query = """
+    SELECT
+        *
+    FROM
+        customers
+    JOIN contract_types USING(contract_type_id)
+    JOIN internet_service_types USING(internet_service_type_id)
+    JOIN payment_types USING(payment_type_id)
+    """
+    telco = pd.read_sql(query,url)
+    return telco
