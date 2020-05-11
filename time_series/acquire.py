@@ -110,6 +110,7 @@ def get_sales_df():
     else:
         get_sales()
         sales_df = pd.read_csv('sales.csv')
+    return sales_df
 
 
 
@@ -119,12 +120,8 @@ def get_all_sales_data():
     '''
     This functions reads all the csvs for items, sales, and stores, then merges them into a single 
     dataframe.
-    args: 
-    reads sales, items, and stores csv files and joins information into one data frame
-    args:
-    refresh: if True, will pull current data from the original source, else will read from local csv files
-    returns:
-    dataframe
+    args: None
+    returns: DataFrame
     '''
 
     stores = get_store_df()
