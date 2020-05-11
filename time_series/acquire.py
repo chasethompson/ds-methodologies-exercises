@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import requests
+import os.path
 
 # ~~~~~ Acquire Sales Data ~~~~~ #
 
@@ -31,7 +32,11 @@ def get_stores():
     stores_df.to_csv('stores.csv', index= False)
 
 def get_store_df():
-    store_df = pd.read_csv('stores.csv')
+    if os.path.isfile('stores.csv'):
+        store_df = pd.read_csv('stores.csv')
+    else:
+        get_stores()
+        store_df = pd.read_csv('stores.csv')
     return store_df
 
 
@@ -46,7 +51,6 @@ def get_items():
     args: None
     Returns: None
     '''
-    def refresh_items():
     base_url = 'https://python.zach.lol'
     api_url = base_url + '/api/v1/items'
     response = requests.get(api_url)
@@ -62,21 +66,12 @@ def get_items():
     items_df = pd.DataFrame(items)
     items_df.to_csv('items.csv', index= False)
 
-
-
-    items = []
-    while True:
-        items += page['items']
-        if page['next_page'] == None:
-            break
-        page_url = base_url + page['next_page']
-        response = requests.get(page_url)
-        page = response.json()['payload']
-    items_df = pd.DataFrame(items)
-    items_df.to_csv('items.csv', index= False)
-
 def get_item_df():
-    item_df = pd.read_csv('items.csv')
+    if os.path.isfile('items.csv'):
+        item_df = pd.read_csv('items.csv')
+    else:
+        get_items()
+        item_df = pd.read_csv('items.csv')
     return item_df
 
 
@@ -109,22 +104,13 @@ def get_sales():
     sales_df = pd.DataFrame(sales)
     sales_df.to_csv('sales.csv', index = False)
 
-
-    #iterates through pages till the last page and appends sales inforation, breaks when 'next_page' == None 
-    while True:
-        sales += page['sales']
-        if page['next_page'] == None:
-            break
-        page_url = base_url + page['next_page']
-        response = requests.get(page_url)
-        page = response.json()['payload']
-    sales_df = pd.DataFrame(sales)
-
-    sales_df.to_csv('sales.csv', index=False)
-
 def get_sales_df():
-    sales_df = pd.read_csv('sales.csv')
-    return sales_df
+    if os.path.isfile('sales.csv'):
+        sales_df = pd.read_csv('sales.csv')
+    else:
+        get_sales()
+        sales_df = pd.read_csv('sales.csv')
+
 
 
 # ~~~~~ Get Full Sales DataFrame ~~~~~ #
