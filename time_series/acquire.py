@@ -230,15 +230,15 @@ def get_store_data():
 # ---------------------- #
 
 
-def german_energy_csv():
-    """
-    This function returns a df with a datetime index
-    using the opsd_germany url/csv.
-    """
-    if os.path.isfile('german_energy.csv'):
-        df = pd.read_csv('german_energy.csv', parse_dates=True, index_col=0)
-    else:
-        url = 'https://raw.githubusercontent.com/jenfly/opsd/master/opsd_germany_daily.csv'
-        df = pd.read_csv(url, parse_dates=True).set_index('Date').sort_index()
-        df.to_csv('german_energy.csv')
-    return df
+# def german_energy_csv():
+#     """
+#     This function returns a df with a datetime index
+#     using the opsd_germany url/csv.
+#     """
+#     if os.path.isfile('german_energy.csv'):
+#         df = pd.read_csv('german_energy.csv', parse_dates=True, index_col=0)
+#     else:
+#         url = 'https://raw.githubusercontent.com/jenfly/opsd/master/opsd_germany_daily.csv'
+#         df = pd.read_csv(url, parse_dates=True).set_index('Date').sort_index()
+#         df.to_csv('german_energy.csv')
+#     return df

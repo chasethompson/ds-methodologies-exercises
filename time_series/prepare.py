@@ -38,7 +38,7 @@ def prepped_energy():
     and displays historgrams for numeric columns
     """
     # Acquire Datetime df
-    gdf = german_energy_csv()
+    gdf = acquire.german_energy_csv()
     
     # Create new date part columns as category dtypes
     gdf['month'] = gdf.index.month.astype('category')
