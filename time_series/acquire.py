@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import requests
 import os.path
+import env
+from os import path
 
 # ~~~~~ Acquire Sales Data ~~~~~ #
 
@@ -181,7 +183,7 @@ def get_df(name):
     df.to_csv(name + '.csv')
     return df
 
-def get_store_data():
+#def get_store_data():
     '''
     This functions checks for the csv file for items, sales, and stores - if there isn't one, it creates the csv. After finding or creating the csv, it merges the csvs into a single dataframe, then creates that into its own csv.
 
@@ -218,7 +220,7 @@ def get_store_data():
 
         # convert sale_date to DateTime Index
         df['sale_date'] = pd.to_datetime(df.sale_date)
-        df = df.set_index('sale_date').sort_index()
+        #df = df.set_index('sale_date').sort_index()
 
         # write merged DateTime df with all data to directory for future use
         df.to_csv('big_df.csv')
@@ -242,3 +244,31 @@ def get_store_data():
 #         df = pd.read_csv(url, parse_dates=True).set_index('Date').sort_index()
 #         df.to_csv('german_energy.csv')
 #     return df
+
+def get_connection(db, user=env.user, host=env.host, password=env.password):
+    return f'mysql+pymysql://{user}:{password}@{host}/{db}'
+
+def get_store_data(cache=True):
+    csv_file_path = './store_item_demand.csv'
+
+    query = '''
+    SELECT
+        sales.*,
+        items.item_brand,
+        items.item_name,
+        items.item_price,
+        stores.store_address,
+        stores.store_zipcode,
+        stores.store_city,
+        stores.store_state
+    FROM sales
+    JOIN items USING(item_id)
+    JOIN stores USING(store_id)
+    '''
+
+    if cache and path.exists(csv_file_path):
+        return pd.read_csv(csv_file_path)
+    else:
+        df = pd.read_sql(query, get_connection('tsa_item_demand'))
+        df.to_csv(csv_file_path, index=False)
+        return df
